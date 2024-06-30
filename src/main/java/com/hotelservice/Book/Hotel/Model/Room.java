@@ -1,0 +1,45 @@
+package com.hotelservice.Book.Hotel.Model;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import org.apache.commons.lang3.RandomStringUtils;
+
+import java.math.BigDecimal;
+import java.sql.Blob;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Data
+public class Room {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    private String roomType;
+
+    private BigDecimal roomPrice;
+
+    private boolean isBooked;
+    @Lob
+    private Blob photo;
+
+    @OneToMany( fetch = FetchType.LAZY, mappedBy="room", cascade = CascadeType.ALL )
+    private List<BookedRoom> bookings;
+
+    public Room() {
+        this.bookings=new ArrayList<>();
+    }
+
+    public void addBooking(BookedRoom booking){
+        if(bookings==null){
+            bookings=new ArrayList<>();
+        }
+        bookings.add(booking);
+        booking.setRoom(this);
+        isBooked=true;
+        String bookingCode= RandomStringUtils.randomNumeric(10);
+        booking.setBookingConfirmationCode(bookingCode);
+    }
+}
