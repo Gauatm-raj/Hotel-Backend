@@ -1,5 +1,6 @@
 package com.hotelservice.Book.Hotel.Service;
 
+import com.hotelservice.Book.Hotel.Exception.IntervalServerException;
 import com.hotelservice.Book.Hotel.Exception.ResorceNotFoundException;
 import com.hotelservice.Book.Hotel.Model.Room;
 import com.hotelservice.Book.Hotel.Repository.Roomrepo;
@@ -45,6 +46,7 @@ public class RoomService {
 
     public byte[] getRoomPhotoByRoomId(Long id) throws SQLException {
         Optional<Room> room= roomrepo.findById(id);
+
         if(room.isEmpty()){
             throw new ResorceNotFoundException("Sorry ");
         }
@@ -60,5 +62,26 @@ public class RoomService {
         if(room.isPresent()){
             roomrepo.deleteById(roomId);
         }
+    }
+
+    public Room updateRoom(Long roomId, String roomType, BigDecimal roomPrice, byte[] photoByte) {
+        Room room= roomrepo.findById(roomId).orElseThrow(()-> new ResorceNotFoundException("Room not found"));
+        if(roomType!=null){
+          room.setRoomType(roomType);
+        }
+        if(roomPrice!=null) room.setRoomPrice(roomPrice);
+        if(photoByte!=null && photoByte.length>0){
+            try{
+               room.setPhoto(new SerialBlob(photoByte));
+            }catch(SQLException e){
+                throw new IntervalServerException("Error updating photo room ");
+            }
+        }
+        return roomrepo.save(room);
+    }
+
+    public Optional<Room> getRoomById(Long roomId) {
+        Optional<Room> room= roomrepo.findById(roomId);
+        return room;
     }
 }

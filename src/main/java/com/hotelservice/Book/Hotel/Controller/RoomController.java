@@ -1,6 +1,7 @@
 package com.hotelservice.Book.Hotel.Controller;
 
 import com.hotelservice.Book.Hotel.Exception.PhotoException;
+import com.hotelservice.Book.Hotel.Exception.ResorceNotFoundException;
 import com.hotelservice.Book.Hotel.Model.BookedRoom;
 import com.hotelservice.Book.Hotel.Model.Room;
 import com.hotelservice.Book.Hotel.Response.BookingResponse;
@@ -14,12 +15,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/rooms")
@@ -67,6 +70,30 @@ public class RoomController {
     public ResponseEntity<Void> deleteRoom(@PathVariable Long roomId){
         roomService.deleteRoom(roomId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/update/{roomId}")
+    public ResponseEntity<RoomResponse> updateRoom(@PathVariable Long roomId,@RequestParam(required = false) String roomType,
+                                                   @RequestParam(required = false) BigDecimal roomPrice,
+                                                   @RequestParam(required = false)MultipartFile photo) throws IOException, SQLException {
+
+        byte[] photoByte=photo!=null && !photo.isEmpty()? photo.getBytes(): roomService.getRoomPhotoByRoomId(roomId);
+
+        Blob photoBlob=photoByte !=null && photoByte.length>0? new SerialBlob(photoByte):null;
+        Room room =roomService.updateRoom(roomId,roomType,roomPrice,photoByte);
+        room.setPhoto(photoBlob);
+        RoomResponse roomResponse = getRoomResponse(room);
+        return  ResponseEntity.ok(roomResponse);
+
+    }
+
+    @GetMapping("/room/{roomId}")
+    public ResponseEntity<Optional<RoomResponse>> getRoomById(@PathVariable Long roomId){
+           Optional<Room> room= roomService.getRoomById(roomId);
+           return room.map(r->{
+               RoomResponse roomResponse=getRoomResponse(r);
+               return ResponseEntity.ok(Optional.of(roomResponse));
+           }).orElseThrow(()-> new ResorceNotFoundException("Room not found"));
     }
 
     private RoomResponse getRoomResponse(Room room) {
