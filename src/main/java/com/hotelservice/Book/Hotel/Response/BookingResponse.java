@@ -2,11 +2,15 @@ package com.hotelservice.Book.Hotel.Response;
 
 import com.hotelservice.Book.Hotel.Model.Room;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BookingResponse {
 
     private Long id;

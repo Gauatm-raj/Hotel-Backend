@@ -2,14 +2,19 @@ package com.hotelservice.Book.Hotel.Response;
 
 
 import com.hotelservice.Book.Hotel.Model.BookedRoom;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.util.List;
 
+
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RoomResponse {
 
     private Long id;
