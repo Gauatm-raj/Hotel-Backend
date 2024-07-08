@@ -1,5 +1,6 @@
 package com.hotelservice.Book.Hotel.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -22,10 +23,13 @@ public class Room {
     private BigDecimal roomPrice;
 
     private boolean isBooked;
+
+    @JsonIgnore
     @Lob
     private Blob photo;
 
-    @OneToMany( fetch = FetchType.LAZY, mappedBy="room", cascade = CascadeType.ALL )
+    @JsonIgnore
+    @OneToMany( mappedBy="room", cascade = CascadeType.ALL )
     private List<BookedRoom> bookings;
 
     public Room() {

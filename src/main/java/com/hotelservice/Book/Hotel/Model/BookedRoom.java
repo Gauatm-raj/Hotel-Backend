@@ -1,5 +1,6 @@
 package com.hotelservice.Book.Hotel.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -32,7 +33,8 @@ public class BookedRoom {
     @Column(name = "totalguest")
     private int totalGuests;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "roomid")
     private Room room;
 
