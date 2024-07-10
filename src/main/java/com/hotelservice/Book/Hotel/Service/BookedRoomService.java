@@ -1,6 +1,7 @@
 package com.hotelservice.Book.Hotel.Service;
 
 import com.hotelservice.Book.Hotel.Exception.InvalidBookingRequestException;
+import com.hotelservice.Book.Hotel.Exception.ResorceNotFoundException;
 import com.hotelservice.Book.Hotel.Model.BookedRoom;
 import com.hotelservice.Book.Hotel.Model.Room;
 import com.hotelservice.Book.Hotel.Repository.BookedRoomRepo;
@@ -70,6 +71,7 @@ public class BookedRoomService {
     }
 
     public BookedRoom findByBookingConfirmationCode(String confirmationCode) {
-        return bookedRoomRepo.findByBookingConfirmationCode(confirmationCode);
+        return bookedRoomRepo.findByBookingConfirmationCode(confirmationCode).orElseThrow(
+                ()->new ResorceNotFoundException("No Booking Found with booking confirmation code : "+ confirmationCode));
     }
 }

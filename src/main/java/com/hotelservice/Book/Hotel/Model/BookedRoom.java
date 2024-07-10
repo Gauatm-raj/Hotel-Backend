@@ -14,10 +14,10 @@ public class BookedRoom {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "chceck_IN")
+
     private LocalDate checkInDate;
 
-    @Column(name = "chceck_OUT")
+
     private LocalDate checkOutDate;
 
     private String guestFullName;
