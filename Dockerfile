@@ -1,23 +1,4 @@
-# Stage 1: Build the application
-FROM maven:latest AS build
-WORKDIR /app
-# Copy the Maven wrapper and other necessary files
-COPY .mvn .mvn
-COPY mvnw pom.xml ./
-RUN chmod +x mvnw
-
-# Copy the rest of the application code
-COPY src ./src
-RUN ls -l
-
-
-# Run Maven build
-RUN ./mvnw clean package -DskipTests
-
-# Stage 2: Run the application
-FROM openjdk:21-slim
-WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
+FROM openjdk:21-alpine
+ARG JAR_FILE=target/*.jar
+COPY ./target/BOOK-HOTEL-0.0.1-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
